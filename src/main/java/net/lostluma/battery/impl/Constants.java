@@ -1,0 +1,46 @@
+package net.lostluma.battery.impl;
+
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+public final class Constants {
+    public static final String VERSION = "1.0.0";
+    public static final String NATIVES = "1.0.0";
+
+    public static Path CACHE_DIR = getCacheDir();
+
+    private static String getUserHome() {
+        return System.getProperty("user.home");
+    }
+
+    private static Path getCacheDir() {
+        Path path;
+        String os = System.getProperty("os.name").toLowerCase();
+
+        if (os.contains("win")) {
+            path = pathFromEnv("LOCALAPPDATA", null);
+        } else if (os.contains("mac")) {
+            String home = getUserHome();
+            path = Paths.get(home, "Library", "Caches");
+        } else {
+            path = pathFromEnv("XDG_CACHE_HOME", ".cache");
+        }
+
+        return path.resolve("net.lostluma.battery");
+    }
+
+    private static Path pathFromEnv(String name, String fallback) {
+        String value = System.getenv(name);
+
+        if (value != null && !value.isEmpty()) {
+            return Paths.get(value);
+        }
+
+        if (fallback != null) {
+            return Paths.get(getUserHome(), fallback);
+        } else {
+            String os = System.getProperty("os.name");
+            throw new RuntimeException("Missing expected env '" + name + "' for '" + os + "'");
+        }
+    }
+}
