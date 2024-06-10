@@ -3,6 +3,7 @@ package net.lostluma.battery.impl;
 import net.lostluma.battery.api.Battery;
 import net.lostluma.battery.api.State;
 import net.lostluma.battery.api.Technology;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -13,6 +14,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.OptionalLong;
 
+@ApiStatus.Internal
 public final class BatteryImpl implements Battery {
     final long ptr;
     private final ManagerImpl manager;

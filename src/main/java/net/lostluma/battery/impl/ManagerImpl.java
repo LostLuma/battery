@@ -4,6 +4,7 @@ import net.lostluma.battery.api.Battery;
 import net.lostluma.battery.api.Manager;
 import net.lostluma.battery.api.exception.LibraryLoadError;
 import net.lostluma.battery.impl.util.LibraryUtil;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -15,6 +16,7 @@ import java.util.Collection;
 import java.util.IdentityHashMap;
 import java.util.Map;
 
+@ApiStatus.Internal
 public final class ManagerImpl implements Manager {
     private final long ptr;
     private boolean active;

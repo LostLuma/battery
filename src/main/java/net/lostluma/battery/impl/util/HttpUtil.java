@@ -1,6 +1,7 @@
 package net.lostluma.battery.impl.util;
 
 import net.lostluma.battery.impl.Constants;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,6 +12,7 @@ import java.nio.file.Path;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 
+@ApiStatus.Internal
 public class HttpUtil {
     private static final Duration TIMEOUT = Duration.of(2, ChronoUnit.MINUTES);
 

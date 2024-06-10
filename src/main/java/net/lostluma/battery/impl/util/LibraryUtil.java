@@ -2,6 +2,7 @@ package net.lostluma.battery.impl.util;
 
 import net.lostluma.battery.api.exception.LibraryLoadError;
 import net.lostluma.battery.impl.Constants;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -10,6 +11,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Properties;
 
+@ApiStatus.Internal
 public class LibraryUtil {
     private static boolean isLoaded = false;
     private static final String BASE_URL = "https://files.lostluma.net/battery-jni/" + Constants.NATIVES + "/";
