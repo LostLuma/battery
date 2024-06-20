@@ -3,7 +3,7 @@ package net.lostluma.battery.impl;
 import net.lostluma.battery.api.Battery;
 import net.lostluma.battery.api.Manager;
 import net.lostluma.battery.api.exception.LibraryLoadError;
-import net.lostluma.battery.impl.util.LibraryUtil;
+import net.lostluma.battery.impl.util.NativeUtil;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
@@ -27,7 +27,7 @@ public final class ManagerImpl implements Manager {
     private final Map<PhantomReference<?>, Long> references;
 
     public ManagerImpl() throws IOException, LibraryLoadError {
-        LibraryUtil.load();
+        NativeUtil.load();
 
         this.ptr = create();
         this.active = true;

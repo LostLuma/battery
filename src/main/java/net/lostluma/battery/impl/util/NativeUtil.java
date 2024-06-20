@@ -12,7 +12,10 @@ import java.nio.file.Path;
 import java.util.Properties;
 
 @ApiStatus.Internal
-public class LibraryUtil {
+public class NativeUtil {
+    private static Path cacheDir = null;
+    private static boolean download = true;
+
     private static boolean isLoaded = false;
     private static final String BASE_URL = "https://files.lostluma.net/battery-jni/" + Constants.NATIVES + "/";
 
@@ -29,10 +32,18 @@ public class LibraryUtil {
         }
     }
 
+    public static void setCacheDir(Path path) {
+        cacheDir = path;
+    }
+
+    public static void setAllowDownloads(boolean value) {
+        download = value;
+    }
+
     private static void load0() throws IOException, LibraryLoadError{
         Properties properties = new Properties();
 
-        try (InputStream stream = LibraryUtil.class.getResourceAsStream("/natives.properties")) {
+        try (InputStream stream = NativeUtil.class.getResourceAsStream("/natives.properties")) {
             if (stream == null) {
                 throw new LibraryLoadError("Failed to read native library info.");
             }
@@ -49,9 +60,15 @@ public class LibraryUtil {
         String name = properties.getProperty(base + ".name");
         String hash = properties.getProperty(base + ".hash");
 
-        Path path = Constants.CACHE_DIR.resolve(name);
+        Path path;
 
-        if (!isLibraryValid(path, hash)) {
+        if (cacheDir != null) {
+            path = cacheDir.resolve(name);
+        } else {
+            path = Constants.CACHE_DIR.resolve(name);
+        }
+
+        if (download && !isLibraryValid(path, hash)) {
             Files.createDirectories(Constants.CACHE_DIR);
             HttpUtil.download(new URL(BASE_URL + name), path);
         }
