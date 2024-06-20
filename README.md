@@ -1,7 +1,7 @@
 Battery
 =======
 
-Java 8+ JNI bindings to the [starship battery](https://crates.io/crates/starship-battery) crate.
+Java 8+ JNI wrapper to the [starship battery](https://crates.io/crates/starship-battery) crate.
 
 Usage
 -----
