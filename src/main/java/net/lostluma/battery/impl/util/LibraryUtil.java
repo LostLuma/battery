@@ -60,7 +60,11 @@ public class LibraryUtil {
             throw new LibraryLoadError("Native library could not be validated.");
         }
 
-        System.load(path.toAbsolutePath().toString());
+        try {
+            System.load(path.toAbsolutePath().toString());
+        } catch (UnsatisfiedLinkError e) {
+            throw new LibraryLoadError(e);
+        }
     }
 
     private static String getArch() {
