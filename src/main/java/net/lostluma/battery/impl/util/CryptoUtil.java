@@ -15,7 +15,7 @@ public class CryptoUtil {
         byte[] data = Files.readAllBytes(path);
 
         try {
-            digest = MessageDigest.getInstance("SHA512");
+            digest = MessageDigest.getInstance("SHA-512");
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException("No SHA512 algorithm found.", e);
         }
