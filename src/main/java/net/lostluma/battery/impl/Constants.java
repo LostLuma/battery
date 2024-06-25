@@ -7,7 +7,7 @@ import java.nio.file.Paths;
 
 @ApiStatus.Internal
 public final class Constants {
-    public static final String VERSION = "1.0.0";
+    public static final String VERSION = "1.0.1";
     public static final String NATIVES = "1.0.0";
 
     public static final Path CACHE_DIR = getCacheDir();
