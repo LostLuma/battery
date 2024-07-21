@@ -70,13 +70,17 @@ public class NativeUtil {
             path = Constants.CACHE_DIR.resolve(name);
         }
 
-        if (download && !isLibraryValid(path, hash)) {
+        if (!isLibraryValid(path, hash)) {
+            if (!download) {
+                throw new LibraryLoadError("Native library could not be validated.");
+            }
+
             Files.createDirectories(Constants.CACHE_DIR);
             HttpUtil.download(new URL(BASE_URL + name), path);
-        }
 
-        if (!isLibraryValid(path, hash)) {
-            throw new LibraryLoadError("Native library could not be validated.");
+            if (!isLibraryValid(path, hash)) {
+                throw new LibraryLoadError("Native library could not be validated.");
+            }
         }
 
         try {
