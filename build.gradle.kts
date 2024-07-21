@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "net.lostluma"
-version = "1.0.1"
+version = project.property("version").toString()
 
 base {
     archivesName = "battery"
