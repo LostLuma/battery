@@ -17,6 +17,8 @@ public class NativeUtil {
     private static boolean download = true;
 
     private static boolean isLoaded = false;
+
+    private static final String METADATA = "/battery.natives.properties";
     private static final String BASE_URL = "https://files.lostluma.net/battery-jni/" + Constants.NATIVES + "/";
 
     public static void load() throws LibraryLoadError {
@@ -43,7 +45,7 @@ public class NativeUtil {
     private static void load0() throws IOException, LibraryLoadError{
         Properties properties = new Properties();
 
-        try (InputStream stream = NativeUtil.class.getResourceAsStream("/natives.properties")) {
+        try (InputStream stream = NativeUtil.class.getResourceAsStream(METADATA)) {
             if (stream == null) {
                 throw new LibraryLoadError("Failed to read native library info.");
             }
