@@ -43,6 +43,18 @@ tasks.withType<JavaCompile> {
     }
 }
 
+/**
+ * Builds the bundled Jar.
+ *
+ * Put all variants of the library into a `library/` directory first!
+ */
+tasks.register<Jar>("buildBundled") {
+    archiveClassifier = "bundled"
+
+    from(files("library/"))
+    from(sourceSets.main.get().output)
+}
+
 publishing {
     publications {
         create<MavenPublication>("maven") {
@@ -51,6 +63,7 @@ publishing {
             version = version
 
             from(components["java"])
+            artifact(tasks.named("buildBundled").get())
         }
     }
 

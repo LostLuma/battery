@@ -9,6 +9,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.Properties;
 
 @ApiStatus.Internal
@@ -71,12 +72,12 @@ public class NativeUtil {
         }
 
         if (!isLibraryValid(path, hash)) {
-            if (!download) {
-                throw new LibraryLoadError("Native library could not be validated.");
-            }
-
             Files.createDirectories(path.getParent());
-            HttpUtil.download(new URL(BASE_URL + name), path);
+            boolean copied = copyFileFromJar(name, path);
+
+            if (!copied && download) {
+                HttpUtil.download(new URL(BASE_URL + name), path);
+            }
 
             if (!isLibraryValid(path, hash)) {
                 throw new LibraryLoadError("Native library could not be validated.");
@@ -115,5 +116,20 @@ public class NativeUtil {
 
     private static boolean isLibraryValid(Path path, String hash) throws IOException {
         return Files.exists(path) && hash.equals(CryptoUtil.sha512(path));
+    }
+
+    private static boolean copyFileFromJar(String name, Path destination) throws IOException {
+        // "+" is not valid inside ZIP files
+        // Gradle replaces them during build
+        name = "/" + name.replace("+", ".");
+
+        try (InputStream stream = NativeUtil.class.getResourceAsStream(name)) {
+            if (stream != null) {
+                Files.copy(stream, destination, StandardCopyOption.REPLACE_EXISTING);
+                return true;
+            }
+        }
+
+        return false;
     }
 }
