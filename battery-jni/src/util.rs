@@ -28,6 +28,7 @@ pub fn get_enum_member<'a>(
 
     Ok(field)
 }
+
 pub trait ToJString {
     fn to_jstring<'a>(self, env: &mut JNIEnv<'a>) -> Result<JString<'a>>;
 }
