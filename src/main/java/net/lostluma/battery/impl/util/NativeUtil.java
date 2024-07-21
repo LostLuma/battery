@@ -19,7 +19,7 @@ public class NativeUtil {
     private static boolean isLoaded = false;
 
     private static final String METADATA = "/battery.natives.properties";
-    private static final String BASE_URL = "https://files.lostluma.net/battery-jni/" + Constants.NATIVES + "/";
+    private static final String BASE_URL = "https://files.lostluma.net/battery-jni/" + Constants.NATIVES_VERSION + "/";
 
     public static void load() throws LibraryLoadError {
         if (isLoaded) {
@@ -67,7 +67,7 @@ public class NativeUtil {
         if (cacheDir != null) {
             path = cacheDir.resolve(name);
         } else {
-            path = Constants.CACHE_DIR.resolve(name);
+            path = Constants.DEFAULT_CACHE_DIR.resolve(name);
         }
 
         if (!isLibraryValid(path, hash)) {
