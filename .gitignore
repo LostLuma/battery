@@ -1,4 +1,4 @@
 .gradle/
 .idea/
-battery-jni/target/
 build/
+target/

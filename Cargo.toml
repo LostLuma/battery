@@ -9,6 +9,7 @@ starship-battery = "0.8.3"
 
 [lib]
 crate-type = ["cdylib"]
+path = "src/main/rust/lib.rs"
 
 [profile.release]
 lto = true
