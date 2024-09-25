@@ -1,0 +1,41 @@
+on: [push, pull_request]
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        platform:
+          - os: macos-14
+            extension: dylib
+            target: x86_64-apple-darwin
+          - os: macos-14
+            extension: dylib
+            target: aarch64-apple-darwin
+          - os: ubuntu-24.04
+            extension: so
+            target: x86_64-unknown-linux-gnu
+          - os: ubuntu-24.04
+            extension: so
+            target: aarch64-unknown-linux-gnu
+          - os: windows-2022
+            extension: dll
+            target: x86_64-pc-windows-msvc
+          - os: windows-2022
+            extension: dll
+            target: aarch64-pc-windows-msvc
+    runs-on: ${{ matrix.platform.os }}
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v4
+      - name: build
+        uses: houseabsolute/actions-rust-cross@v0
+        with:
+          command: build
+          args: "--release"
+          target: ${{ matrix.platform.target }}
+      - name: capture build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          if-no-files-found: error
+          name: battery-jni-${{ matrix.platform.os }}-${{ matrix.platform.target }}
+          path: target/${{ matrix.platform.target }}/release/*.${{ matrix.platform.extension }}

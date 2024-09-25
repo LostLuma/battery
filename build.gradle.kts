@@ -72,8 +72,8 @@ publishing {
             url = uri("https://maven.lostluma.net/releases")
 
             credentials {
-                username = project.property("maven.username").toString()
-                password = project.property("maven.password").toString()
+                username = project.properties["maven.username"].toString()
+                password = project.properties["maven.password"].toString()
             }
         }
     }
