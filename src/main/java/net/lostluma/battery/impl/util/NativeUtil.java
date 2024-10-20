@@ -119,11 +119,7 @@ public class NativeUtil {
     }
 
     private static boolean copyFileFromJar(String name, Path destination) throws IOException {
-        // "+" is not valid inside ZIP files
-        // Gradle replaces them during build
-        name = "/" + name.replace("+", ".");
-
-        try (InputStream stream = NativeUtil.class.getResourceAsStream(name)) {
+        try (InputStream stream = NativeUtil.class.getResourceAsStream("/" + name)) {
             if (stream != null) {
                 Files.copy(stream, destination, StandardCopyOption.REPLACE_EXISTING);
                 return true;
