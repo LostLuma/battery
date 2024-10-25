@@ -3,10 +3,9 @@ use jni::{
     sys::jlong,
     JNIEnv,
 };
+use starship_battery::{Battery, Manager};
 
-use crate::{
-    create_manager, drop_battery, drop_manager, get_batteries, throw_io_exception, update_battery,
-};
+use crate::{create_manager, get_batteries, update_battery, util::drop_box};
 
 #[no_mangle]
 pub extern "system" fn Java_net_lostluma_battery_impl_ManagerImpl_create<'a>(
@@ -14,12 +13,11 @@ pub extern "system" fn Java_net_lostluma_battery_impl_ManagerImpl_create<'a>(
     _class: JClass<'a>,
 ) -> jlong {
     match create_manager() {
-        Ok(value) => value,
-        Err(error) => {
-            throw_io_exception(&mut env, error);
-            jlong::default()
-        }
+        Ok(ptr) => return ptr,
+        Err(error) => error.throw(&mut env),
     }
+
+    jlong::default()
 }
 
 #[no_mangle]
@@ -28,12 +26,11 @@ pub extern "system" fn Java_net_lostluma_battery_impl_ManagerImpl_batteries0<'a>
     this: JObject<'a>,
 ) -> JObjectArray<'a> {
     match get_batteries(&mut env, &this) {
-        Ok(value) => value,
-        Err(error) => {
-            throw_io_exception(&mut env, error);
-            JObjectArray::default()
-        }
+        Ok(batteries) => return batteries,
+        Err(error) => error.throw(&mut env),
     }
+
+    JObjectArray::default()
 }
 
 #[no_mangle]
@@ -42,7 +39,7 @@ pub extern "system" fn Java_net_lostluma_battery_impl_ManagerImpl_drop<'a>(
     _this: JObject<'a>,
     ptr: jlong,
 ) {
-    drop_manager(ptr);
+    drop_box::<Manager>(ptr);
 }
 
 #[no_mangle]
@@ -51,7 +48,7 @@ pub extern "system" fn Java_net_lostluma_battery_impl_BatteryImpl_update0<'a>(
     this: JObject<'a>,
 ) {
     if let Err(error) = update_battery(&mut env, &this) {
-        throw_io_exception(&mut env, error);
+        error.throw(&mut env);
     }
 }
 
@@ -61,5 +58,5 @@ pub extern "system" fn Java_net_lostluma_battery_impl_ManagerImpl_dropBattery<'a
     _this: JObject<'a>,
     ptr: jlong,
 ) {
-    drop_battery(ptr)
+    drop_box::<Battery>(ptr);
 }

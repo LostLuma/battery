@@ -12,7 +12,7 @@ use starship_battery::{
     },
     Battery, Manager,
 };
-use util::{as_descriptor, get_enum_member, get_ptr, ToJString};
+use util::{as_descriptor, get_enum_member, into_box, pull_box, ToJString};
 
 const STRING_CLASS: &str = "java/lang/String";
 const IO_EXCEPTION_CLASS: &str = "java/io/IOException";
@@ -28,6 +28,13 @@ mod util;
 
 struct Error {
     message: String, // Used as IOError message
+}
+
+impl Error {
+    fn throw(self, env: &mut JNIEnv) {
+        env.throw_new(IO_EXCEPTION_CLASS, self.message)
+            .expect("throw exception");
+    }
 }
 
 impl From<jni::errors::Error> for Error {
@@ -50,12 +57,11 @@ type Result<T> = result::Result<T, Error>;
 
 fn create_manager() -> Result<i64> {
     let manager = Manager::new()?;
-    Ok(Box::into_raw(Box::from(manager)) as jlong)
+    Ok(into_box(manager) as jlong)
 }
 
 fn get_batteries<'a>(env: &mut JNIEnv<'a>, this: &JObject<'a>) -> Result<JObjectArray<'a>> {
-    let ptr = get_ptr(env, this)?;
-    let manager = unsafe { &mut *(ptr as *mut Manager) };
+    let manager = pull_box::<Manager>(env, this)?;
 
     let mut count = 0;
     let mut batteries: Vec<Battery> = Vec::new();
@@ -78,11 +84,6 @@ fn get_batteries<'a>(env: &mut JNIEnv<'a>, this: &JObject<'a>) -> Result<JObject
     Ok(array)
 }
 
-fn drop_manager<'a>(ptr: jlong) {
-    #[allow(unused_variables)]
-    let manager = unsafe { Box::from_raw(ptr as *mut Manager) };
-}
-
 fn create_battery<'a>(
     env: &mut JNIEnv<'a>,
     parent: &JObject<'a>,
@@ -94,8 +95,7 @@ fn create_battery<'a>(
     let model = battery.model().to_jstring(env)?;
     let serial_number = battery.serial_number().to_jstring(env)?;
 
-    let ptr = Box::into_raw(Box::from(battery)) as jlong;
-
+    let ptr = into_box(battery);
     let class = env.find_class(BATTERY_CLASS)?;
 
     let object = env.new_object(
@@ -112,8 +112,8 @@ fn update_battery<'a>(env: &mut JNIEnv<'a>, this: &JObject<'a>) -> Result<()> {
         .get_field(this, "manager", as_descriptor(MANAGER_CLASS))?
         .l()?;
 
-    let battery = unsafe { &mut *(get_ptr(env, this)? as *mut Battery) };
-    let manager = unsafe { &mut *(get_ptr(env, &parent)? as *mut Manager) };
+    let battery = pull_box::<Battery>(env, this)?;
+    let manager = pull_box::<Manager>(env, &parent)?;
 
     manager.refresh(battery)?;
 
@@ -165,14 +165,4 @@ fn update_battery<'a>(env: &mut JNIEnv<'a>, this: &JObject<'a>) -> Result<()> {
     )?;
 
     Ok(())
-}
-
-fn drop_battery<'a>(ptr: jlong) {
-    #[allow(unused_variables)]
-    let battery = unsafe { Box::from_raw(ptr as *mut Battery) };
-}
-
-fn throw_io_exception<'a>(env: &mut JNIEnv<'a>, error: Error) {
-    env.throw_new(IO_EXCEPTION_CLASS, error.message)
-        .expect("throw exception");
 }

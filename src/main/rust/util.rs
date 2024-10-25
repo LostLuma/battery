@@ -10,8 +10,22 @@ pub fn as_descriptor(class: &str) -> String {
     format!("L{class};")
 }
 
-pub fn get_ptr<'a>(env: &mut JNIEnv<'a>, this: &JObject<'a>) -> Result<jlong> {
-    Ok(env.get_field(this, "ptr", "J")?.try_into()?)
+pub fn into_box<T>(t: T) -> jlong {
+    Box::into_raw(Box::from(t)) as jlong
+}
+
+pub fn drop_box<T>(ptr: jlong) {
+    #[allow(unused_variables)]
+    let value = unsafe { Box::from_raw(ptr as *mut T) };
+}
+
+fn get_pointer(env: &mut JNIEnv, object: &JObject) -> Result<jlong> {
+    Ok(env.get_field(object, "ptr", "J")?.j()?)
+}
+
+pub fn pull_box<'r, T>(env: &mut JNIEnv, object: &JObject) -> Result<&'r mut T> {
+    let pointer = get_pointer(env, object)?;
+    Ok(unsafe { &mut *(pointer as *mut T) })
 }
 
 pub fn get_enum_member<'a>(
