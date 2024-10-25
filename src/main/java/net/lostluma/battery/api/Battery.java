@@ -1,5 +1,6 @@
 package net.lostluma.battery.api;
 
+import net.lostluma.battery.api.exception.InvalidStateError;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -127,7 +128,7 @@ public interface Battery {
      * Refresh battery information in-place.
      *
      * @throws IOException battery information couldn't be refreshed.
-     * @throws RuntimeException the associated manager is not active.
+     * @throws InvalidStateError the associated manager isn't active.
      */
-    void update() throws IOException, RuntimeException;
+    void update() throws IOException, InvalidStateError;
 }

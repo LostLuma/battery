@@ -1,5 +1,6 @@
 package net.lostluma.battery.api;
 
+import net.lostluma.battery.api.exception.InvalidStateError;
 import net.lostluma.battery.api.exception.LibraryLoadError;
 import net.lostluma.battery.impl.ManagerImpl;
 import org.jetbrains.annotations.NotNull;
@@ -32,9 +33,9 @@ public interface Manager extends AutoCloseable {
      *
      * @return the system's current batteries.
      * @throws IOException looking up the batteries failed.
-     * @throws RuntimeException the manager is already closed.
+     * @throws InvalidStateError the manager is already closed.
      */
-    @NotNull Collection<Battery> batteries() throws IOException, RuntimeException;
+    @NotNull Collection<Battery> batteries() throws IOException, InvalidStateError;
 
     /**
      * Close the manager.

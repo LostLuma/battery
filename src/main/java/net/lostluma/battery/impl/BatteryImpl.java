@@ -1,5 +1,6 @@
 package net.lostluma.battery.impl;
 
+import net.lostluma.battery.api.exception.InvalidStateError;
 import net.lostluma.battery.api.Battery;
 import net.lostluma.battery.api.State;
 import net.lostluma.battery.api.Technology;
@@ -49,11 +50,11 @@ public final class BatteryImpl implements Battery {
     }
 
     @Override
-    public void update() throws IOException, RuntimeException {
+    public void update() throws IOException, InvalidStateError {
         if (this.manager.isActive()) {
             this.update0();
         } else {
-            throw new RuntimeException("Attached manager is closed.");
+            throw new InvalidStateError("Attached manager is closed.");
         }
     }
 

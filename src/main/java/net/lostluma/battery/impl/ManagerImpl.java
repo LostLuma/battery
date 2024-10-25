@@ -2,6 +2,7 @@ package net.lostluma.battery.impl;
 
 import net.lostluma.battery.api.Battery;
 import net.lostluma.battery.api.Manager;
+import net.lostluma.battery.api.exception.InvalidStateError;
 import net.lostluma.battery.api.exception.LibraryLoadError;
 import net.lostluma.battery.impl.util.NativeUtil;
 import org.jetbrains.annotations.ApiStatus;
@@ -41,7 +42,7 @@ public final class ManagerImpl implements Manager {
     }
 
     @Override
-    public @NotNull Collection<Battery> batteries() throws IOException, RuntimeException {
+    public @NotNull Collection<Battery> batteries() throws IOException, InvalidStateError {
         if (this.isActive()) {
             BatteryImpl[] batteries = this.batteries0();
 
@@ -57,7 +58,7 @@ public final class ManagerImpl implements Manager {
 
             return Arrays.asList(batteries);
         } else {
-            throw new RuntimeException("Manager can not be used after being closed!");
+            throw new InvalidStateError("Manager can not be used after being closed!");
         }
     }
 
