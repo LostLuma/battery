@@ -9,7 +9,7 @@ The library can be installed from the `releases` repository on [maven.lostluma.n
 - `default`: Downloads, validates, and caches the dynamic library on demand. Saves bandwidth and disk space.
 - `bundled`: Contains the dynamic library for all platforms. Recommended if first application startup may be offline.
 
-The dynamic library is comes prebuilt for the following platforms:
+The dynamic library comes prebuilt for the following platforms:
 
 |         | aarch64 | amd64 | riscv64 |
 | ------- | ------- | ----- | ------- |
