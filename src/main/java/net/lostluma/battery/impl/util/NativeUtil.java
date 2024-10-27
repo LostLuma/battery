@@ -9,6 +9,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Properties;
 
@@ -44,6 +45,23 @@ public class NativeUtil {
     }
 
     private static void load0() throws IOException, LibraryLoadError{
+        Path path;
+        String custom = System.getProperty(Constants.NATIVES_PATH_PROPERTY);
+
+        if (custom == null) {
+            path = getPath();
+        } else {
+            path = Paths.get(custom);
+        }
+
+        try {
+            System.load(path.toAbsolutePath().toString());
+        } catch (UnsatisfiedLinkError e) {
+            throw new LibraryLoadError(e);
+        }
+    }
+
+    private static Path getPath() throws IOException, LibraryLoadError {
         Properties properties = new Properties();
 
         try (InputStream stream = NativeUtil.class.getResourceAsStream(METADATA)) {
@@ -84,11 +102,7 @@ public class NativeUtil {
             }
         }
 
-        try {
-            System.load(path.toAbsolutePath().toString());
-        } catch (UnsatisfiedLinkError e) {
-            throw new LibraryLoadError(e);
-        }
+        return path;
     }
 
     private static String getArch() {

@@ -11,6 +11,7 @@ public final class Constants {
     public static final String NATIVES_VERSION = "1.2.0";
 
     public static final Path DEFAULT_CACHE_DIR = getDefaultCacheDir();
+    public static final String NATIVES_PATH_PROPERTY = "battery.natives.path";
 
     private static String getUserHome() {
         return System.getProperty("user.home");
