@@ -1,0 +1,1 @@
+- Fix NoSuchAlgorithmException due to incorrect SHA-512 algorithm naming on Java 8

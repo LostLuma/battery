@@ -1,0 +1,2 @@
+- Update underlying dependencies
+- Remove internal file naming workaround used in bundled variant

@@ -1,0 +1,4 @@
+- Add `bundled` variant which includes the native library for offline use
+- Fix library metadata potentially not loading due to its non-unique file name
+- Fix native library being validated multiple times even if the first validation passed
+- Fix error when writing to custom cache directory if it hadn't been created by the user

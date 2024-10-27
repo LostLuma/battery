@@ -1,0 +1,5 @@
+- Add and throw InvalidStateError when attempting to use a closed manager
+  - This is a subclass of RuntimeException, which was previously thrown here
+- Add RISC-V on Linux to set of supported platforms
+- Add option to use your own custom-built libraries if required
+  - To use this set the `battery.natives.path` system property to the file path
