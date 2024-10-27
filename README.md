@@ -19,7 +19,3 @@ The dynamic library comes prebuilt for the following platforms:
 
 Running on other platforms is also possible, however some manual setup is required:  
 First build the project with Cargo, then set the `battery.natives.path` system property to the file path.
-
-## Misc
-
-This is my first time using both Rust and JNI :)
