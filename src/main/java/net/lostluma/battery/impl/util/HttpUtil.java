@@ -9,6 +9,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 
@@ -29,27 +30,8 @@ public class HttpUtil {
             throw new IOException("Library download error: " + status);
         }
 
-        int size;
-        String length = connection.getHeaderField("Content-Length");
-
-        try {
-            size = Integer.parseInt(length);
-        } catch (NumberFormatException e) {
-            throw new IOException("Received invalid Content-Length header!");
-        }
-
         try (InputStream stream = connection.getInputStream()) {
-            int input;
-            int index = 0;
-
-            byte[] data = new byte[size];
-
-            while ((input = stream.read()) != -1) {
-                data[index] = (byte) input;
-                index ++;
-            }
-
-            Files.write(into, data);
+            Files.copy(stream, into, StandardCopyOption.REPLACE_EXISTING);
         }
     }
 }
